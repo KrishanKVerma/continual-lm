@@ -27,6 +27,7 @@ def score_rows(rows) -> dict:
     return {"n": n, "correct": k, "acc": (k / n) if n else None,
             "char_overlap": (ov / n) if n else None}
 
+
 def char_overlap(pred: str, gold: str) -> float:
     """Positional character accuracy. Secondary metric for floor tasks like reversal."""
     p, g = normalize(pred), normalize(gold)
