@@ -19,3 +19,5 @@ wandb/
 # OS / editor
 .DS_Store
 .ipynb_checkpoints/
+
+results/**/*.preds.jsonl
