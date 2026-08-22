@@ -41,8 +41,9 @@ def generate(model, tok, prompts, max_new_tokens, batch_size=16):
         enc = tok(batch, return_tensors="pt", padding=True, truncation=True,
                   max_length=256).to(model.device)
         with torch.no_grad():
-            gen = model.generate(**enc, max_new_tokens=max_new_tokens,
-                                 do_sample=False, pad_token_id=tok.pad_token_id)
+                        gen = model.generate(**enc, max_new_tokens=max_new_tokens,
+                                 do_sample=False, temperature=None, top_p=None,
+                                 top_k=None, pad_token_id=tok.pad_token_id)
         for j in range(len(batch)):
             new = gen[j][enc["input_ids"].shape[1]:]
             outs.append(tok.decode(new, skip_special_tokens=True))

@@ -18,9 +18,19 @@ def is_correct(pred: str, gold: str) -> bool:
 
 def score_rows(rows) -> dict:
     """rows: iterable of dicts with 'pred' and 'answer'. Returns counts, not just a rate."""
-    n = 0
-    k = 0
+    n = k = 0
+    ov = 0.0
     for r in rows:
         n += 1
         k += int(is_correct(r["pred"], r["answer"]))
-    return {"n": n, "correct": k, "acc": (k / n) if n else None}
+        ov += char_overlap(r["pred"], r["answer"])
+    return {"n": n, "correct": k, "acc": (k / n) if n else None,
+            "char_overlap": (ov / n) if n else None}
+
+def char_overlap(pred: str, gold: str) -> float:
+    """Positional character accuracy. Secondary metric for floor tasks like reversal."""
+    p, g = normalize(pred), normalize(gold)
+    if not g:
+        return 0.0
+    m = sum(1 for i, c in enumerate(g) if i < len(p) and p[i] == c)
+    return m / len(g)
