@@ -82,7 +82,7 @@ def main():
                              args.max_new_tokens)
         for r, p in zip(rows, preds):
             r["pred"] = p
-        summary["tasks"][task] = score_rows(rows)
+        summary["tasks"][task] = score_rows(rows , task)
         with (out_dir / f"{task}.preds.jsonl").open("w") as f:
             for r in rows:
                 f.write(json.dumps(r) + "\n")
