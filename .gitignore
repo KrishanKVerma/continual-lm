@@ -21,3 +21,4 @@ wandb/
 .ipynb_checkpoints/
 
 results/**/*.preds.jsonl
+adapters/
