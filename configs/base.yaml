@@ -1,0 +1,17 @@
+model_id: Qwen/Qwen2.5-0.5B-Instruct
+task_order: [t1_add, t2_reverse, t3_date, t4_sentiment, t5_extract]
+seed: 0
+method: naive          # naive | replay | ewc
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+train:
+  epochs: 1
+  lr: 1.0e-4
+  batch_size: 8
+  max_len: 128
+eval:
+  n_per_task: 200
+  max_new_tokens: 12
