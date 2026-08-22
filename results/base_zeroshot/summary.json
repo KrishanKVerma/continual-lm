@@ -1,0 +1,38 @@
+{
+  "tag": "base_zeroshot",
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "adapter": null,
+  "stub": false,
+  "tasks": {
+    "t1_add": {
+      "n": 200,
+      "correct": 162,
+      "acc": 0.81,
+      "char_overlap": 0.8566666666666667
+    },
+    "t2_reverse": {
+      "n": 200,
+      "correct": 0,
+      "acc": 0.0,
+      "char_overlap": 0.22820039682539675
+    },
+    "t3_date": {
+      "n": 200,
+      "correct": 144,
+      "acc": 0.72,
+      "char_overlap": 0.8514999999999996
+    },
+    "t4_sentiment": {
+      "n": 200,
+      "correct": 187,
+      "acc": 0.935,
+      "char_overlap": 0.9675
+    },
+    "t5_extract": {
+      "n": 200,
+      "correct": 186,
+      "acc": 0.93,
+      "char_overlap": 0.9329999999999999
+    }
+  }
+}
