@@ -1,0 +1,53 @@
+{
+  "tag": "naive_seed0/step5_t5_extract",
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "adapter": "adapters/naive_seed0/step5_t5_extract",
+  "stub": false,
+  "tasks": {
+    "t1_add": {
+      "n": 200,
+      "correct": 199,
+      "acc": 0.995,
+      "char_overlap": 0.9983333333333334,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 0.995
+    },
+    "t2_reverse": {
+      "n": 200,
+      "correct": 10,
+      "acc": 0.05,
+      "char_overlap": 0.4520178571428575,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 0.05
+    },
+    "t3_date": {
+      "n": 200,
+      "correct": 200,
+      "acc": 1.0,
+      "char_overlap": 1.0,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 1.0
+    },
+    "t4_sentiment": {
+      "n": 200,
+      "correct": 200,
+      "acc": 1.0,
+      "char_overlap": 1.0,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 1.0
+    },
+    "t5_extract": {
+      "n": 200,
+      "correct": 200,
+      "acc": 1.0,
+      "char_overlap": 1.0,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 1.0
+    }
+  }
+}
