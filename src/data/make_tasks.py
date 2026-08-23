@@ -1,4 +1,8 @@
-"""Generate 5 synthetic task streams. Exact-match scorable, no downloads."""
+"""Generate task streams. Exact-match scorable, no downloads.
+
+Trained tasks: t1_add, t2_reverse, t3_date, t4_sentiment, t5_extract, t3b_date_us
+Control tasks (eval only, never trained): c1_multiply, c2_country, c3_wordcount
+"""
 import json, random, argparse
 from pathlib import Path
 
@@ -57,7 +61,7 @@ def t3b_date_us(rng):
 
 # ---- Control tasks: NEVER trained. Measure general capability erosion. ----
 def c1_multiply(rng):
-    a, b = rng.randint(2, 12), rng.randint(2, 12)
+    a, b = rng.randint(2, 99), rng.randint(2, 99)
     return f"Compute: {a} * {b}", str(a * b)
 
 
@@ -65,19 +69,25 @@ def c2_country(rng):
     pairs = [("France", "Paris"), ("Japan", "Tokyo"), ("Brazil", "Brasilia"),
              ("Kenya", "Nairobi"), ("Norway", "Oslo"), ("Egypt", "Cairo"),
              ("Peru", "Lima"), ("Nepal", "Kathmandu"), ("Cuba", "Havana"),
-             ("Ghana", "Accra"), ("Iraq", "Baghdad"), ("Chile", "Santiago")]
+             ("Ghana", "Accra"), ("Iraq", "Baghdad"), ("Chile", "Santiago"),
+             ("Poland", "Warsaw"), ("Sweden", "Stockholm"), ("Vietnam", "Hanoi"),
+             ("Morocco", "Rabat"), ("Bolivia", "Sucre"), ("Ireland", "Dublin")]
+    lead = ["What is the capital of", "Name the capital of", "Capital city of",
+            "Which city is the capital of", "State the capital of"]
     hedge = ["", " Answer briefly.", " Just the name.", " Be concise.",
              " One word.", " No explanation.", " Quickly.", " Short answer."]
     c, cap = rng.choice(pairs)
-    return f"What is the capital of {c}?{rng.choice(hedge)}", cap
+    return f"{rng.choice(lead)} {c}?{rng.choice(hedge)}", cap
 
 
 def c3_wordcount(rng):
     pool = ["red", "quiet", "iron", "swift", "hollow", "bright", "narrow",
-            "stone", "distant", "clear", "sharp", "warm"]
-    n = rng.randint(3, 8)
+            "stone", "distant", "clear", "sharp", "warm", "pale", "coarse",
+            "dense", "faint", "rough", "steady"]
+    n = rng.randint(3, 9)
     ws = [rng.choice(pool) for _ in range(n)]
     return f"How many words are in this list: {' '.join(ws)}", str(n)
+
 
 TASKS = {
     "t1_add": t1_add,
@@ -91,17 +101,20 @@ TASKS = {
     "c3_wordcount": c3_wordcount,
 }
 
+CONTROLS = {"c1_multiply", "c2_country", "c3_wordcount"}
+
 
 def build(name, fn, n_train, n_eval, seed):
     rng = random.Random(seed)
     seen, rows = set(), []
-    attempts, cap = 0, (n_train + n_eval) * 100
-    while len(rows) < n_train + n_eval:
+    need = n_train + n_eval
+    attempts, cap = 0, need * 100
+    while len(rows) < need:
         attempts += 1
         if attempts > cap:
             raise RuntimeError(
                 f"{name}: exhausted unique prompts at {len(rows)} rows "
-                f"(need {n_train + n_eval}). Widen the template space."
+                f"(need {need}). Widen the template space."
             )
         p, a = fn(rng)
         if p in seen:
@@ -120,10 +133,12 @@ def main():
 
     OUT.mkdir(parents=True, exist_ok=True)
     for i, (name, fn) in enumerate(TASKS.items()):
-        tr, ev = build(name, fn, args.n_train, args.n_eval, args.seed + i)
+        n_tr = 0 if name in CONTROLS else args.n_train
+        tr, ev = build(name, fn, n_tr, args.n_eval, args.seed + i)
         assert not (set(r["prompt"] for r in tr) & set(r["prompt"] for r in ev)), \
             f"{name}: train/eval overlap"
-        for split, rows in (("train", tr), ("eval", ev)):
+        splits = (("eval", ev),) if name in CONTROLS else (("train", tr), ("eval", ev))
+        for split, rows in splits:
             path = OUT / f"{name}.{split}.jsonl"
             with path.open("w") as f:
                 for r in rows:
