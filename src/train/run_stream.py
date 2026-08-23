@@ -19,7 +19,13 @@ def main():
     ap.add_argument("--n_train", type=int, default=500)
     ap.add_argument("--n_per_task", type=int, default=200)
     ap.add_argument("--epochs", type=int, default=1)
+    ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--lora_r", type=int, default=16)
+    ap.add_argument("--controls", nargs="*",
+                    default=["c1_multiply", "c2_country", "c3_wordcount"],
+                    help="evaluated but never trained")
     args = ap.parse_args()
+    eval_tasks = args.order + args.controls
 
     prev = None
     for i, task in enumerate(args.order, 1):
@@ -29,7 +35,8 @@ def main():
         else:
             cmd = ["python", "-m", "src.train.train_task", "--task", task, "--out", out,
                    "--seed", str(args.seed), "--n_train", str(args.n_train),
-                   "--epochs", str(args.epochs)]
+                   "--epochs", str(args.epochs), "--lr", str(args.lr),
+                   "--lora_r", str(args.lora_r)]
             if prev:
                 cmd += ["--resume_adapter", prev]
             sh(cmd)
@@ -38,12 +45,13 @@ def main():
             print(f"skip eval step{i} — summary exists", flush=True)
         else:
             sh(["python", "-m", "src.eval.evaluate", "--adapter", out, "--tag", tag,
-                "--n_per_task", str(args.n_per_task), "--tasks", *args.order])
+                "--n_per_task", str(args.n_per_task), "--tasks", *eval_tasks])
         prev = out
 
-    manifest = {"run": args.run, "seed": args.seed, "order": args.order,
-                "n_train": args.n_train, "n_per_task": args.n_per_task,
-                "epochs": args.epochs}
+        manifest = {"run": args.run, "seed": args.seed, "order": args.order,
+                    "controls": args.controls, "n_train": args.n_train,
+                    "n_per_task": args.n_per_task, "epochs": args.epochs,
+                    "lr": args.lr, "lora_r": args.lora_r}
     Path("results", args.run).mkdir(parents=True, exist_ok=True)
     Path("results", args.run, "manifest.json").write_text(json.dumps(manifest, indent=2))
     print("stream complete:", args.run)

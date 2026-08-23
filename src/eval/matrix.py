@@ -12,7 +12,7 @@ def main():
     args = ap.parse_args()
 
     man = json.load(open(Path("results", args.run, "manifest.json")))
-    order = man["order"]
+    order = man["order"] + man.get("controls", [])
 
     rows = []
     base = json.load(open(Path("results", args.baseline, "summary.json")))["tasks"]

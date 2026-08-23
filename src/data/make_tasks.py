@@ -49,12 +49,46 @@ def t5_extract(rng):
             f"{c} {rng.choice(when)}.", c)
 
 
+# ---- Conflicting task: same surface as t3_date, different required output ----
+def t3b_date_us(rng):
+    d, m, y = rng.randint(1, 28), rng.randint(1, 12), rng.randint(1990, 2025)
+    return f"Convert to MM/DD/YYYY: {d:02d}/{m:02d}/{y}", f"{m:02d}/{d:02d}/{y}"
+
+
+# ---- Control tasks: NEVER trained. Measure general capability erosion. ----
+def c1_multiply(rng):
+    a, b = rng.randint(2, 12), rng.randint(2, 12)
+    return f"Compute: {a} * {b}", str(a * b)
+
+
+def c2_country(rng):
+    pairs = [("France", "Paris"), ("Japan", "Tokyo"), ("Brazil", "Brasilia"),
+             ("Kenya", "Nairobi"), ("Norway", "Oslo"), ("Egypt", "Cairo"),
+             ("Peru", "Lima"), ("Nepal", "Kathmandu"), ("Cuba", "Havana"),
+             ("Ghana", "Accra"), ("Iraq", "Baghdad"), ("Chile", "Santiago")]
+    hedge = ["", " Answer briefly.", " Just the name.", " Be concise.",
+             " One word.", " No explanation.", " Quickly.", " Short answer."]
+    c, cap = rng.choice(pairs)
+    return f"What is the capital of {c}?{rng.choice(hedge)}", cap
+
+
+def c3_wordcount(rng):
+    pool = ["red", "quiet", "iron", "swift", "hollow", "bright", "narrow",
+            "stone", "distant", "clear", "sharp", "warm"]
+    n = rng.randint(3, 8)
+    ws = [rng.choice(pool) for _ in range(n)]
+    return f"How many words are in this list: {' '.join(ws)}", str(n)
+
 TASKS = {
     "t1_add": t1_add,
     "t2_reverse": t2_reverse,
     "t3_date": t3_date,
     "t4_sentiment": t4_sentiment,
     "t5_extract": t5_extract,
+    "t3b_date_us": t3b_date_us,
+    "c1_multiply": c1_multiply,
+    "c2_country": c2_country,
+    "c3_wordcount": c3_wordcount,
 }
 
 

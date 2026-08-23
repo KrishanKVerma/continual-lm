@@ -10,6 +10,10 @@ _FMT = {
     "t3_date": _re.compile(r"^\d{4}-\d{2}-\d{2}$"),
     "t4_sentiment": _re.compile(r"^(positive|negative)$"),
     "t5_extract": _re.compile(r"^[a-z]+$"),
+    "t3b_date_us": _re.compile(r"^\d{2}/\d{2}/\d{4}$"),
+    "c1_multiply": _re.compile(r"^-?\d+$"),
+    "c2_country": _re.compile(r"^[a-z ]+$"),
+    "c3_wordcount": _re.compile(r"^\d+$"),
 }
 
 
