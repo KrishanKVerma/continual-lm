@@ -8,31 +8,46 @@
       "n": 200,
       "correct": 162,
       "acc": 0.81,
-      "char_overlap": 0.8566666666666667
+      "char_overlap": 0.8566666666666667,
+      "wellformed": 0.995,
+      "n_wellformed": 199,
+      "acc_given_wellformed": 0.8140703517587939
     },
     "t2_reverse": {
       "n": 200,
       "correct": 0,
       "acc": 0.0,
-      "char_overlap": 0.22820039682539675
+      "char_overlap": 0.22820039682539675,
+      "wellformed": 0.98,
+      "n_wellformed": 196,
+      "acc_given_wellformed": 0.0
     },
     "t3_date": {
       "n": 200,
       "correct": 144,
       "acc": 0.72,
-      "char_overlap": 0.8514999999999996
+      "char_overlap": 0.8514999999999996,
+      "wellformed": 0.89,
+      "n_wellformed": 178,
+      "acc_given_wellformed": 0.8089887640449438
     },
     "t4_sentiment": {
       "n": 200,
       "correct": 187,
       "acc": 0.935,
-      "char_overlap": 0.9675
+      "char_overlap": 0.9675,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 0.935
     },
     "t5_extract": {
       "n": 200,
       "correct": 186,
       "acc": 0.93,
-      "char_overlap": 0.9329999999999999
+      "char_overlap": 0.9329999999999999,
+      "wellformed": 1.0,
+      "n_wellformed": 200,
+      "acc_given_wellformed": 0.93
     }
   }
 }
