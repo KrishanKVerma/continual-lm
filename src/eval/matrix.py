@@ -12,30 +12,34 @@ def main():
     args = ap.parse_args()
 
     man = json.load(open(Path("results", args.run, "manifest.json")))
-    order = man["order"] + man.get("controls", [])
+    order = man["order"]
+    cols = order + man.get("controls", [])
+
 
     rows = []
     base = json.load(open(Path("results", args.baseline, "summary.json")))["tasks"]
-    rows.append(("base", [base[t][args.metric] for t in order]))
+    rows.append(("base", [base[t][args.metric] for t in cols]))
 
     for i, task in enumerate(order, 1):
         s = json.load(open(Path("results", args.run, f"step{i}_{task}", "summary.json")))["tasks"]
-        rows.append((f"after_{task}", [s[t][args.metric] for t in order]))
+        rows.append((f"after_{task}", [s[t][args.metric] for t in cols]))
 
     w = max(len(r[0]) for r in rows) + 2
     print(f"metric: {args.metric}   run: {args.run}   seed: {man['seed']}\n")
-    print(" " * w + "".join(f"{t:>16s}" for t in order))
+    print(" " * w + "".join(f"{t:>16s}" for t in cols))
+    print(" " * w + "".join(f"{'[ctrl]' if t in man.get('controls', []) else '':>16s}"
+                            for t in cols))
     for name, vals in rows:
         print(f"{name:<{w}s}" + "".join(f"{v:>16.3f}" for v in vals))
 
     final = rows[-1][1]
     print("\nretention vs each task's own peak:")
-    for j, t in enumerate(order):
+    for j, t in enumerate(cols):
         peak = max(r[1][j] for r in rows)
         print(f"  {t:<14s} peak={peak:.3f}  final={final[j]:.3f}  drop={peak - final[j]:+.3f}")
 
     out = Path("results", args.run, f"matrix_{args.metric}.json")
-    out.write_text(json.dumps({"order": order, "metric": args.metric,
+    out.write_text(json.dumps({"order": order, "cols": cols, "metric": args.metric,
                                "rows": {n: v for n, v in rows}}, indent=2))
     print(f"\nwrote {out}")
 
