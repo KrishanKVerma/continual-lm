@@ -26,16 +26,23 @@ def is_correct(pred: str, gold: str) -> bool:
 
 
 def score_rows(rows, task=None) -> dict:
-    n = k = wf = 0
+    n = k = wf = wf_k = 0
     ov = 0.0
+    t = task or ""
     for r in rows:
         n += 1
-        k += int(is_correct(r["pred"], r["answer"]))
+        c = is_correct(r["pred"], r["answer"])
+        w = is_wellformed(r["pred"], t or r.get("task", ""))
+        k += int(c)
+        wf += int(w)
+        wf_k += int(c and w)
         ov += char_overlap(r["pred"], r["answer"])
-        wf += int(is_wellformed(r["pred"], task or r.get("task", "")))
     return {"n": n, "correct": k, "acc": (k / n) if n else None,
             "char_overlap": (ov / n) if n else None,
-            "wellformed": (wf / n) if n else None}
+            "wellformed": (wf / n) if n else None,
+            "n_wellformed": wf,
+            "acc_given_wellformed": (wf_k / wf) if wf else None}
+
 
 def char_overlap(pred: str, gold: str) -> float:
     """Positional character accuracy. Secondary metric for floor tasks like reversal."""

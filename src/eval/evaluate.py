@@ -27,6 +27,9 @@ def load_model(model_id, adapter=None):
         model_id, torch_dtype=torch.bfloat16, device_map="auto"
     )
     if adapter:
+        from pathlib import Path as _P
+        if not (_P(adapter) / "adapter_config.json").exists():
+            raise FileNotFoundError(f"no adapter at {adapter}")
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, adapter)
     model.eval()
